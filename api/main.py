@@ -11,6 +11,11 @@ def add_doc(doc_item: DocsItem):
     docs_table.add_docs(doc_item)
 
 
+@app.get("/documents")
+def get_all_docs():
+    return docs_table.get_doc()
+
+
 @app.get("/documents/{doc_id}")
 def get_doc_by_id(doc_id: int):
     return docs_table.get_doc(doc_id)[0]

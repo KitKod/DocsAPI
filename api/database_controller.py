@@ -46,9 +46,12 @@ class DocsTableManipulator:
                                              owner = doc_item.owner)
             conn.execute(ins)
 
-    def get_doc(self, id):
+    def get_doc(self, id = None):
         with self.engine.connect() as conn:
-            selected = self.table.select().where(self.table.c.id == id)
+            if id is not None:
+                selected = self.table.select().where(self.table.c.id == id)
+            else:
+                selected = self.table.select()
             result = conn.execute(selected)
 
         return self.__parse_query_result(result)
