@@ -11,6 +11,20 @@ services:
     networks:
       - docs_net
 
+  api:
+    build: ./api/.
+    command: uvicorn main:app --reload --host api
+    env_file:
+      - api.env
+    volumes:
+      - ./api/:/usr/src/app
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+    networks:
+      - docs_net
+
   adminer:
     image: adminer
     restart: always
