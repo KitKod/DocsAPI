@@ -4,6 +4,7 @@ sys.path.append('..')
 import datetime
 
 from celery import Celery
+from celery.schedules import crontab
 
 from api.database_controller import DocsTableManipulator
 
@@ -13,7 +14,7 @@ celery_app = Celery('tasks', broker='pyamqp://guest:guest@rabbitmq:5672/')
 
 @celery_app.on_after_configure.connect
 def setup_periodic_tasks(sender, **kwargs):
-    sender.add_periodic_task(20.0, make_report.s(), name='add every 50')
+    sender.add_periodic_task(crontab(minute = 0, hour = 0), make_report.s(), name='add every 50')
 
 
 @celery_app.task

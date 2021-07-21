@@ -39,14 +39,14 @@ class DocsTableManipulator:
         )
         self.meta.create_all(self.engine)
 
-    def add_docs(self, doc_item):
+    def add_docs(self, doc_item: DocsItem):
         with self.engine.connect() as conn:
             ins = self.table.insert().values(name = doc_item.name,
                                              content = doc_item.content,
                                              owner = doc_item.owner)
             conn.execute(ins)
 
-    def get_doc(self, id = None):
+    def get_doc(self, id: int = None):
         with self.engine.connect() as conn:
             if id is not None:
                 selected = self.table.select().where(self.table.c.id == id)
@@ -56,20 +56,20 @@ class DocsTableManipulator:
 
         return self.__parse_query_result(result)
 
-    def get_doc_by_date(self, date):
+    def get_doc_by_date(self, date: datetime):
         with self.engine.connect() as conn:
             selected = self.table.select().where(self.table.c.creation_date == date)
             result = conn.execute(selected)
 
         return self.__parse_query_result(result)
 
-    def update_doc(self, id, doc_item):
+    def update_doc(self, id: int, doc_item: DocsItem):
         with self.engine.connect() as conn:
             to_update = {k: v for k, v in doc_item.dict().items() if v}
             updated = self.table.update().where(self.table.c.id == id).values(**to_update)
             conn.execute(updated)
 
-    def delete_doc(self, id):
+    def delete_doc(self, id: int):
         with self.engine.connect() as conn:
             deleted = self.table.delete().where(self.table.c.id == id)
             conn.execute(deleted)
