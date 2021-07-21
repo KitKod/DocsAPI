@@ -1,5 +1,4 @@
 fastapi
-uvicorn[standard]
+celery
 SQLAlchemy
 psycopg2-binary
-celery

@@ -1,6 +1,11 @@
+import sys
+sys.path.append('..')
+
 from fastapi import FastAPI
 
+import celery_tasks.tasks as task
 from database_controller import DocsTableManipulator, DocsItem
+
 
 app = FastAPI()
 docs_table = DocsTableManipulator()
@@ -29,3 +34,8 @@ def update_doc_by_id(doc_id: int, doc_item: DocsItem):
 @app.delete("/documents/{doc_id}")
 def delete_doc_by_id(doc_id: int):
     return docs_table.delete_doc(doc_id)
+
+
+@app.get("/make_report")
+def make_rep():
+    task.celery_app.send_task('tasks.make_report')

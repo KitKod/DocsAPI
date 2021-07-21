@@ -17,11 +17,37 @@ services:
     env_file:
       - api.env
     volumes:
-      - ./api/:/usr/src/app
+      - ./api/:/usr/src/app/api
+      - ./celery_tasks/:/usr/src/app/celery_tasks
     ports:
       - 8000:8000
     depends_on:
       - db
+    networks:
+      - docs_net
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - rabbitmq-lib:/var/lib/rabbitmq/
+      - rabbitmq-log:/var/log/rabbitmq
+    networks:
+      - docs_net
+
+  celery_tasks:
+    build: ./celery_tasks/.
+    command: celery -A tasks worker -B --loglevel=DEBUG
+    env_file:
+      - api.env
+    volumes:
+      - ./api/:/usr/src/app/api
+      - ./celery_tasks/:/usr/src/app/celery_tasks
+      - docs-report:/usr/src/app/reports
+    depends_on:
+      - api
     networks:
       - docs_net
 
@@ -35,6 +61,9 @@ services:
 
 volumes:
   postgres-data:
+  rabbitmq-lib:
+  rabbitmq-log:
+  docs-report:
 
 networks:
   docs_net:

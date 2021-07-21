@@ -1,6 +1,6 @@
 FROM python:3.7
 
-WORKDIR /usr/src/app/api
+WORKDIR /usr/src/app/celery_tasks
 
 COPY requirements.txt ./
 RUN pip install -r requirements.txt

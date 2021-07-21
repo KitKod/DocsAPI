@@ -56,6 +56,13 @@ class DocsTableManipulator:
 
         return self.__parse_query_result(result)
 
+    def get_doc_by_date(self, date):
+        with self.engine.connect() as conn:
+            selected = self.table.select().where(self.table.c.creation_date == date)
+            result = conn.execute(selected)
+
+        return self.__parse_query_result(result)
+
     def update_doc(self, id, doc_item):
         with self.engine.connect() as conn:
             to_update = {k: v for k, v in doc_item.dict().items() if v}
@@ -71,5 +78,4 @@ class DocsTableManipulator:
         parsed_data = []
         for row in result:
             parsed_data.append({x: y for x, y in zip(self.column_names, row)})
-
         return parsed_data
